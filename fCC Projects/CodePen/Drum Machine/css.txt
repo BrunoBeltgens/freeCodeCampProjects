@@ -1,0 +1,28 @@
+body {
+  display: grid;
+  height: 100vh;
+  place-items: center;
+}
+#drum-machine {
+  max-width: 21rem;
+}
+#display {
+  font-size: 1.8rem;
+  font-family: "Open Sans", sans-serif;
+  height: 3rem;
+}
+.drum-pad {
+  box-sizing: border-box;
+  font-family: "Open Sans", sans-serif;
+  background: black;
+  color: white;
+  border-radius: 1rem;
+  border: 0.25rem solid gray;
+  width: 7rem;
+  height: 7rem;
+  text-align: center;
+  font-size: 2rem;
+}
+.drum-pad:hover {
+  opacity: 0.8 !important;
+}

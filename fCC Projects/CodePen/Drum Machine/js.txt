@@ -1,0 +1,168 @@
+class DrumMachine extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      currentDisplay: ""
+    };
+    this.onChange = this.onChange.bind(this);
+    this.handleKeyPress = this.handleKeyPress.bind(this);
+  }
+  componentDidMount() {
+    document.addEventListener("keydown", this.handleKeyPress);
+  }
+  componentWillUnmount() {
+    document.removeEventListener("keydown", this.handleKeyPress);
+  }
+  handleKeyPress(e) {
+    if (e.keyCode === 81 || e.keyCode === 87 || e.keyCode === 69 || e.keyCode === 65 || e.keyCode === 83 || e.keyCode === 68 || e.keyCode === 90 || e.keyCode === 88 || e.keyCode === 67) {
+    let el = document.getElementById(
+      String.fromCharCode(e.keyCode).toUpperCase()
+    );
+    this.setState((state) => ({
+      currentDisplay: el.parentNode.id
+    }));
+    el.play();
+    el.parentNode.style.opacity = 0.8;
+    setTimeout(function () {
+      el.parentNode.style.opacity = 1;
+    }, 100);
+  }
+  }
+  onChange() {
+    this.setState((state) => ({
+      currentDisplay: event.target.id
+    }));
+    let btn = document.getElementById(event.target.id);
+    btn.querySelector("audio").play();
+    btn.style.opacity = 0.8;
+    setTimeout(function () {
+      btn.style.opacity = 1;
+    }, 100);
+  }
+  render() {
+    return (
+      <div>
+        <div id="display">{this.state.currentDisplay}</div>
+        <button
+          keyCode="81"
+          onClick={this.onChange}
+          id="Chord-1"
+          className="drum-pad"
+        >
+          Q
+          <audio
+            src="https://s3.amazonaws.com/freecodecamp/drums/Chord_1.mp3"
+            id="Q"
+            className="clip"
+          />
+        </button>
+        <button
+          keyCode="87"
+          onClick={this.onChange}
+          id="Chord-2"
+          className="drum-pad"
+        >
+          W
+          <audio
+            src="https://s3.amazonaws.com/freecodecamp/drums/Chord_2.mp3"
+            id="W"
+            className="clip"
+          />
+        </button>
+        <button
+          keyCode="69"
+          onClick={this.onChange}
+          id="Chord-3"
+          className="drum-pad"
+        >
+          E
+          <audio
+            src="https://s3.amazonaws.com/freecodecamp/drums/Chord_3.mp3"
+            id="E"
+            className="clip"
+          />
+        </button>
+        <button
+          keyCode="65"
+          onClick={this.onChange}
+          id="Shaker"
+          className="drum-pad"
+        >
+          A
+          <audio
+            src="https://s3.amazonaws.com/freecodecamp/drums/Give_us_a_light.mp3"
+            id="A"
+            className="clip"
+          />
+        </button>
+        <button
+          keyCode="83"
+          onClick={this.onChange}
+          id="Open-HH"
+          className="drum-pad"
+        >
+          S
+          <audio
+            src="https://s3.amazonaws.com/freecodecamp/drums/Dry_Ohh.mp3"
+            id="S"
+            className="clip"
+          />
+        </button>
+        <button
+          keyCode="68"
+          onClick={this.onChange}
+          id="Closed-HH"
+          className="drum-pad"
+        >
+          D
+          <audio
+            src="https://s3.amazonaws.com/freecodecamp/drums/Bld_H1.mp3"
+            id="D"
+            className="clip"
+          />
+        </button>
+        <button
+          keyCode="90"
+          onClick={this.onChange}
+          id="Punchy-Kick"
+          className="drum-pad"
+        >
+          Z
+          <audio
+            src="https://s3.amazonaws.com/freecodecamp/drums/punchy_kick_1.mp3"
+            id="Z"
+            className="clip"
+          />
+        </button>
+        <button
+          keyCode="88"
+          onClick={this.onChange}
+          id="Side-Stick"
+          className="drum-pad"
+        >
+          X
+          <audio
+            src="https://s3.amazonaws.com/freecodecamp/drums/side_stick_1.mp3"
+            id="X"
+            className="clip"
+          />
+        </button>
+        <button
+          keyCode="67"
+          onClick={this.onChange}
+          id="Snare"
+          className="drum-pad"
+        >
+          C
+          <audio
+            src="https://s3.amazonaws.com/freecodecamp/drums/Brk_Snr.mp3"
+            id="C"
+            className="clip"
+          />
+        </button>
+      </div>
+    );
+  }
+}
+
+ReactDOM.render(<DrumMachine />, document.getElementById("drum-machine"));

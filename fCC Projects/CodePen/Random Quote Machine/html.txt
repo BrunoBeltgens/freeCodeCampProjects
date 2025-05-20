@@ -1,0 +1,9 @@
+<div id="quote-box" class="row w-50 h-50 align-items-center">
+    <h1 class="text-center col-12">Random Quote Machine</h1>
+    <div id="text" class="col-12 text-center">Loadig...</div>
+    <div id="author" class="col-12"></div>
+    <button id="new-quote" class="rounded p-2 btn-info border-0 col-4" onclick="getQuote()">
+      NEW QUOTE</button>
+    <a id="tweet-quote" class="btn col-4 ms-auto p-2" href="https://twitter.com/intent/tweet" target="_blank"><i class="fa fa-twitter"></i>TWEET
+      QUOTE</a>
+</div>

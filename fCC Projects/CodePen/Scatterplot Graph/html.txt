@@ -1,0 +1,5 @@
+<div>
+  <h1 id="title">Doping in Professional Bicycle Racing<h1>
+      <div id="scatter"></div>
+</div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.1.1/d3.min.js"></script>

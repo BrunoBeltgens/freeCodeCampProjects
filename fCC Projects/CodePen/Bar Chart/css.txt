@@ -1,0 +1,36 @@
+body {
+  background: aqua;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+h1 {
+  font-size: 2.5rem;
+  font-weight: 200;
+  text-align: center;
+}
+div {
+  background: white;
+}
+.bar:hover {
+  fill: cyan !important;
+}
+#chart {
+  padding: 0 1.5rem 1.5rem 1.5rem;
+}
+#tooltip {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: absolute;
+  width: 150px;
+  height: 50px;
+  padding: 2px;
+  text-align: center;
+  font-size: 1.1rem;
+  background: lightsteelblue;
+  box-shadow: 1px 1px 5px;
+  border-radius: 0.25rem;
+  pointer-events: none;
+}

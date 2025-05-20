@@ -1,0 +1,86 @@
+let svg = d3.select("#svg");
+let tooltip = d3.select("#tooltip");
+let legend = d3.select("#legend");
+d3.json(
+  "https://cdn.freecodecamp.org/testable-projects-fcc/data/tree_map/video-game-sales-data.json"
+).then((data) => {
+  let hierarchy = d3
+    .hierarchy(data, (node) => node.children)
+    .sum((node) => node["value"])
+    .sort((node1, node2) => node2.value - node1.value);
+  let createTreeMap = d3.treemap().size([1000, 600]).padding(1);
+  createTreeMap(hierarchy);
+  let tiles = hierarchy.leaves();
+  const categories = data.children.map((game) => game.name);
+  const colors = [
+    "#4c92c3",
+    "#bed2ed",
+    "#ff993e",
+    "#ffc993",
+    "#56b356",
+    "#ade5a1",
+    "#ffadab",
+    "#d0b0a9",
+    "#de5253",
+    "#a985ca",
+    "#d1c0dd",
+    "#e992ce",
+    "#f9c5db",
+    "#999999",
+    "#d2d2d2",
+    "#4c92c3",
+    "#c9ca4e",
+    "#e2e2a4"
+  ];
+  const colorScale = d3.scaleOrdinal().domain(categories).range(colors);
+  let block = svg
+    .selectAll("g")
+    .data(tiles)
+    .enter()
+    .append("g")
+    .attr("transform", (game) => "translate(" + game.x0 + ", " + game.y0 + ")");
+  block
+    .append("rect")
+    .attr("class", "tile")
+    .attr("fill", (game) => colorScale(game.data.category))
+    .attr("data-name", (game) => game.data.name)
+    .attr("data-category", (game) => game.data.category)
+    .attr("data-value", (game) => game.data.value)
+    .attr("width", (game) => game.x1 - game.x0)
+    .attr("height", (game) => game.y1 - game.y0)
+    .on("mousemove", (event, game) => {
+      tooltip
+        .attr("data-value", game.data.value)
+        .style("opacity", 0.8)
+        .style("top", event.pageY + "px")
+        .style("left", event.pageX + "px")
+        .html(
+          game.data.name +
+            "<br/>" +
+            game.data.category +
+            "<br/>" +
+            game.data.value
+        );
+    })
+    .on("mouseout", (game) => {
+      tooltip.style("opacity", 0);
+    });
+  block
+    .append("text")
+    .text((game) => game.data.name)
+    .attr("x", 7.5)
+    .attr("y", 20);
+  legendBox = legend.selectAll("g").data(colors).enter().append("g");
+  legendBox
+    .append("rect")
+    .attr("class", "legend-item")
+    .attr("fill", (d) => d)
+    .attr("height", 20)
+    .attr("width", 20)
+    .attr("y", (d, i) => i * 25 + 10);
+  legendBox
+    .append("text")
+    .text((d, i) => categories[i])
+    .attr("y", (d, i) => i * 25 + 25)
+    .attr("x", 30);
+});

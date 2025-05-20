@@ -1,0 +1,135 @@
+const color = [
+  "#313695",
+  "#313695",
+  "#74add1",
+  "#74add1",
+  "#abd9e9",
+  "#e0f3f8",
+  "#ffffbf",
+  "#fee090",
+  "#fdae61",
+  "#f46d43",
+  "#d73027",
+  "#a50026",
+  "#a50026"
+];
+d3.json(
+  "https://raw.githubusercontent.com/freeCodeCamp/ProjectReferenceData/master/global-temperature.json"
+).then((data) => {
+  data.monthlyVariance.forEach((d) => {
+    d.month -= 1;
+  });
+  const h1 = d3
+    .select("body")
+    .append("h2")
+    .attr("id", "description")
+    .text(
+      d3.min(data.monthlyVariance, (d) => d.year) +
+        " - " +
+        d3.max(data.monthlyVariance, (d) => d.year) +
+        ": base temperature: " +
+        data.baseTemperature +
+        "C"
+    );
+  const h = 12 * 40,
+    w = 5 * Math.ceil(data.monthlyVariance.length / 12);
+  const svg = d3
+    .select("body")
+    .append("svg")
+    .attr("height", h + 100)
+    .attr("width", w + 250)
+    .append("g")
+    .attr("transform", "translate(150,0)");
+  let tooltip = d3
+    .select("body")
+    .append("div")
+    .attr("id", "tooltip")
+    .style("opacity", 0);
+  const xScale = d3
+    .scaleBand()
+    .domain(data.monthlyVariance.map((y) => y.year))
+    .range([0, w]);
+  const yScale = d3
+    .scaleBand()
+    .domain([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11])
+    .range([0, h]);
+  svg
+    .selectAll(".cell")
+    .data(data.monthlyVariance)
+    .enter()
+    .append("rect")
+    .attr("class", "cell")
+    .attr("data-month", (d) => d.month)
+    .attr("data-year", (d) => d.year)
+    .attr("data-temp", (d) => data.baseTemperature + d.variance)
+    .attr("x", (d) => xScale(d.year))
+    .attr("y", (d) => yScale(d.month))
+    .attr("width", (d) => Math.ceil(xScale.bandwidth(d.year)))
+    .attr("height", (d) => Math.ceil(yScale.bandwidth(d.month)))
+    .style("fill", (d) => color[Math.round(d.variance) + 7])
+    .on("mouseover", function (event, d) {
+      tooltip
+        .style("opacity", 0.8)
+        .style("left", event.pageX + "px")
+        .style("top", event.pageY + "px")
+        .attr("data-year", d.year)
+        .html(
+          d.year +
+            "</br>" +
+            d.variance +
+            "</br>" +
+            (data.baseTemperature + d.variance)
+        );
+    })
+    .on("mouseout", function (event, d) {
+      tooltip.style("opacity", 0);
+    });
+  const yAxis = d3
+    .axisLeft(yScale)
+    .tickValues(yScale.domain())
+    .tickFormat((m) => {
+      const date = new Date(0);
+      date.setUTCMonth(m);
+      const format = d3.timeFormat("%B");
+      return format(date);
+    });
+  const xAxis = d3
+    .axisBottom()
+    .scale(xScale)
+    .tickValues(
+      xScale.domain().filter((y) => {
+        return y % 10 === 0;
+      })
+    );
+  svg.append("g").call(yAxis).attr("id", "y-axis").style("font-size", "0.8rem");
+  svg
+    .append("g")
+    .call(xAxis)
+    .attr("id", "x-axis")
+    .attr("transform", "translate(0, " + h + ")");
+  const legend = svg
+    .append("g")
+    .attr("id", "legend")
+    .attr("transform", "translate(0,540)");
+  legend
+    .selectAll("rect")
+    .data(color)
+    .enter()
+    .append("rect")
+    .attr("fill", (d) => d)
+    .attr("width", 20)
+    .attr("height", 20)
+    .attr("x", (d, i) => i * 20);
+  legend
+    .append("text")
+    .attr("y", 40)
+    .attr("x", 1)
+    .attr("width", 20)
+    .text("Cold");
+  legend
+    .append("text")
+    .attr("y", 40)
+    .attr("x", 217)
+    .attr("width", 20)
+    .text("Warm");
+});

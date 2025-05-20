@@ -1,0 +1,5 @@
+<div>
+  <h1 id="title">United States GDP</h1>
+  <div id="chart"></div>
+</div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.1.0/d3.min.js"></script>

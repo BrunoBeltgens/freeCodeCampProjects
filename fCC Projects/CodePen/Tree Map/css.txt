@@ -1,0 +1,17 @@
+body {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  font-family: Helvetica, Arial, sans-serif;
+}
+#tooltip {
+  opacity: 0;
+  background: gray;
+  height: auto;
+  width: auto;
+  border-radius: 0.5rem;
+  position: absolute;
+  pointer-events: none;
+  padding: 0.5rem;
+}

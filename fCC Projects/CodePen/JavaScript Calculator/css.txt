@@ -1,0 +1,58 @@
+* {
+}
+#grid {
+  display: grid;
+  grid-template: repeat(5, auto) / repeat(4, 25%);
+  width: 20rem;
+  height: 29rem;
+}
+button {
+  font-size: 2rem;
+  border: none;
+  background: #242424;
+  min-height: 5rem;
+  box-sizing: border-box;
+}
+#zero {
+  grid-column: 1 / 3;
+  border-bottom-left-radius: 1rem;
+}
+#clear {
+  background: red;
+  grid-column: 1 / 3;
+}
+#equals {
+  background: aqua;
+  grid-column: 4 / 5;
+  grid-row: 5 / 7;
+  border-bottom-right-radius: 1rem;
+}
+#display {
+  padding: 1.5rem;
+  background: black;
+  color: white;
+  text-align: right;
+  grid-column: 1 / 5;
+  grid-row: 1 / 2;
+  box-sizing: border-box;
+  border-top-left-radius: 1rem;
+  border-top-right-radius: 1rem;
+  height: 4rem;
+  font-family: Helvetica, Arial, sans-serif;
+  font-size: 1.5rem;
+}
+button:hover {
+  background: #3b3b3b;
+}
+#equals:hover {
+  background: #00d4ff;
+}
+#clear:hover {
+  background: darkred;
+}
+#divide,
+#multiply,
+#subtract,
+#add {
+  color: white;
+}

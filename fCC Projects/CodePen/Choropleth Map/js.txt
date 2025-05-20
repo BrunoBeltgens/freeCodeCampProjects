@@ -1,0 +1,45 @@
+colors = ["darkblue","blue","#5496ff","#38b9ff","#a1c5ff"]
+svg = d3.select('body').append('svg').attr('height',600).attr('width',1000)
+let tooltip = d3
+    .select("body")
+    .append("div")
+    .attr("id", "tooltip")
+    .style("opacity", 0);
+  const path = d3.geoPath();
+const legend = svg.append('g').attr('transform','translate(800,20)').attr('id','legend')
+legend.selectAll('rect').data(colors).enter().append('rect').attr('height',20).attr('width',40).attr('x', (d,i) => i*-40).attr('fill', d => d)
+legend.append('text').text('3%').attr('x',-150).attr('y',40)
+legend.append('text').text('66%').attr('x',5).attr('y',40)
+Promise.all([d3.json('https://cdn.freecodecamp.org/testable-projects-fcc/data/choropleth_map/for_user_education.json'), d3.json('https://cdn.freecodecamp.org/testable-projects-fcc/data/choropleth_map/counties.json')])
+  .then(data => {
+    svg  
+      .selectAll("path")
+      .data(topojson.feature(data[1], data[1].objects.counties).features)
+      .enter()
+      .append("path")
+      .attr("d", path)
+      .attr("class","county")
+      .attr("data-fips", d => d.id)
+      .attr("data-education", d => data[0].filter(obj => obj.fips === d.id)[0].bachelorsOrHigher)
+    .attr("data-county", d => data[0].filter(obj => obj.fips === d.id)[0].area_name)
+    .attr("fill", function(d) {
+      const val = d3.select(this).attr("data-education");
+      if (val > 50) {
+        return colors[0];
+      } else if (val > 35) {
+        return colors[1];
+      } else if (val > 20) {
+        return colors[2];
+      } else if (val > 10) {
+        return colors[3];
+      } else {
+        return colors[4];
+      }
+    })
+      .on('mouseover', function(event, d) {
+      tooltip.style("top", event.pageY + "px").style("left", event.pageX + "px").style("opacity",0.8).attr("data-education", d3.select(this).attr("data-education")).html(d3.select(this).attr("data-county") + "</br>" + tooltip.attr("data-education") + "%")
+    })
+    .on('mouseout', (event,d) => {
+      tooltip.style("opacity",0)
+    })
+})

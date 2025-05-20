@@ -1,0 +1,150 @@
+class Clock extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      totSec: 1500,
+      sesSec: 1500,
+      breakSec: 300,
+      status: "Start",
+      prevState: "Session"
+    };
+    this.tick = this.tick.bind(this);
+    this.start = this.start.bind(this);
+    this.reset = this.reset.bind(this);
+    this.setDisplay = this.setDisplay.bind(this);
+    this.sesInc = this.sesInc.bind(this);
+    this.sesDec = this.sesDec.bind(this);
+    this.breakInc = this.breakInc.bind(this);
+    this.breakDec = this.breakDec.bind(this);
+    this.minDisplay = this.minDisplay.bind(this);
+  }
+  start() {
+    if (this.state.status === "Paused" || this.state.status === "Start") {
+      this.timerID = setInterval(() => this.tick(), 1000);
+      this.setState((state) => ({
+        status: state.prevState
+      }));
+    } else {
+      clearInterval(this.timerID);
+      this.setState((state) => ({
+        status: "Paused"
+      }));
+    }
+  }
+  tick() {
+    if (this.state.totSec > 0) {
+      this.setState((state) => ({
+        totSec: state.totSec - 1
+      }));
+    } else if (this.state.status === "Session") {
+      document.getElementById("beep").play();
+      this.setState((state) => ({
+        totSec: state.breakSec,
+        status: "Break",
+        prevState: "Break"
+      }));
+    } else {
+      document.getElementById("beep").play();
+      this.setState((state) => ({
+        status: "Session",
+        prevState: "Session",
+        totSec: state.sesSec
+      }));
+    }
+  }
+  reset() {
+    clearInterval(this.timerID);
+    document.getElementById("beep").pause();
+    document.getElementById("beep").currentTime = 0;
+    this.setState({
+      status: "Start",
+      totSec: 1500,
+      sesSec: 1500,
+      breakSec: 300,
+      prevState: "Session"
+    });
+  }
+  setDisplay(sec) {
+    if (sec < 60 && sec % 60 < 10) {
+      return "00:0" + (sec % 60);
+    } else if (sec < 60 && sec % 60 >= 10) {
+      return "00:" + (sec % 60);
+    } else if (sec >= 60 && sec < 600 && sec % 60 < 10) {
+      return "0" + Math.floor(sec / 60) + ":0" + (sec % 60);
+    } else if (sec >= 60 && sec < 600 && sec % 60 >= 10) {
+      return "0" + Math.floor(sec / 60) + ":" + (sec % 60);
+    } else if (sec >= 600 && sec % 60 < 10) {
+      return Math.floor(sec / 60) + ":0" + (sec % 60);
+    } else if (sec >= 600 && sec % 60 >= 10) {
+      return Math.floor(sec / 60) + ":" + (sec % 60);
+    }
+  }
+  minDisplay(sec) {
+    return sec / 60;
+  }
+  sesInc() {
+    if (this.state.sesSec < 3600) {
+      this.setState((state) => ({
+        totSec: state.totSec + 60,
+        sesSec: state.sesSec + 60
+      }));
+    }
+  }
+  sesDec() {
+    if (this.state.sesSec > 60) {
+      this.setState((state) => ({
+        totSec: state.totSec - 60,
+        sesSec: state.sesSec - 60
+      }));
+    }
+  }
+  breakInc() {
+    if (this.state.breakSec < 3600) {
+      this.setState((state) => ({
+        breakSec: state.breakSec + 60
+      }));
+    }
+  }
+  breakDec() {
+    if (this.state.breakSec > 60) {
+      this.setState((state) => ({
+        breakSec: state.breakSec - 60
+      }));
+    }
+  }
+  render() {
+    return (
+      <div id="container">
+        <div id="break-label">Break Length</div>
+        <div id="break-length">{this.minDisplay(this.state.breakSec)}</div>
+        <button id="break-decrement" onClick={this.breakDec}>
+          -
+        </button>
+        <button id="break-increment" onClick={this.breakInc}>
+          +
+        </button>
+        <div id="session-label">Session Length</div>
+        <div id="session-length">{this.minDisplay(this.state.sesSec)}</div>
+        <button id="session-decrement" onClick={this.sesDec}>
+          -
+        </button>
+        <button id="session-increment" onClick={this.sesInc}>
+          +
+        </button>
+        <div id="timer-label">{this.state.status}</div>
+        <div id="time-left">{this.setDisplay(this.state.totSec)}</div>
+        <button id="start_stop" onClick={this.start}>
+          Start/Stop
+        </button>
+        <button id="reset" onClick={this.reset}>
+          Reset
+        </button>
+        <audio
+          id="beep"
+          src="https://raw.githubusercontent.com/freeCodeCamp/cdn/master/build/testable-projects-fcc/audio/BeepSound.wav"
+        />
+      </div>
+    );
+  }
+}
+ReactDOM.render(<Clock />, document.getElementById("app"));

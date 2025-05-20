@@ -1,0 +1,107 @@
+const h = 400,
+  w = 800;
+const svg = d3
+  .select("#scatter")
+  .append("svg")
+  .attr("height", h + 120)
+  .attr("width", w + 100)
+  .append("g")
+  .attr("transform", "translate(50, 100)")
+  .append("g")
+  .attr("transform", "translate(20,0)");
+let tooltip = d3
+  .select("#scatter")
+  .append("div")
+  .attr("id", "tooltip")
+  .style("opacity", 0);
+const legend = svg.append("g").attr("id", "legend");
+legend
+  .append("rect")
+  .attr("x", w - 235)
+  .attr("y", 100)
+  .attr("height", 20)
+  .attr("width", 20)
+  .style("fill", "red");
+legend
+  .append("rect")
+  .attr("x", w - 235)
+  .attr("y", 75)
+  .attr("height", 20)
+  .attr("width", 20)
+  .style("fill", "blue");
+legend
+  .append("text")
+  .text("Riders with doping allegations")
+  .style("font-size", "0.8rem")
+  .attr("x", w - 207.5)
+  .attr("y", 115);
+legend
+  .append("text")
+  .text("No doping allegations")
+  .style("font-size", "0.8rem")
+  .attr("x", w - 207.5)
+  .attr("y", 90);
+d3.json(
+  "https://raw.githubusercontent.com/freeCodeCamp/ProjectReferenceData/master/cyclist-data.json"
+).then((data) => {
+  data.forEach((d) => {
+    d.Place = +d.Place;
+    const splitTime = d.Time.split(":");
+    d.Time = new Date(1970, 0, 1, 0, splitTime[0], splitTime[1]);
+  });
+
+  const xScale = d3
+    .scaleLinear()
+    .domain([d3.min(data, (d) => d.Year - 1), d3.max(data, (d) => d.Year + 1)])
+    .range([0, w]);
+  const yScale = d3
+    .scaleTime()
+    .domain(d3.extent(data, (d) => d.Time))
+    .range([0, h]);
+
+  const xAxis = d3.axisBottom(xScale).tickFormat(d3.format("d"));
+  const yAxis = d3.axisLeft(yScale).tickFormat(d3.timeFormat("%M:%S"));
+  svg
+    .selectAll(".dot")
+    .data(data)
+    .enter()
+    .append("circle")
+    .attr("data-xvalue", (d) => d.Year)
+    .attr("data-yvalue", (d) => d.Time)
+    .attr("class", "dot")
+    .attr("r", 7.5)
+    .attr("cx", (d, i) => xScale(d.Year))
+    .attr("cy", (d, i) => yScale(d.Time))
+    .style("fill", (d) => {
+      if (d.Doping === "") {
+        return "blue";
+      } else {
+        return "red";
+      }
+    })
+    .on("mouseover", function (event, d) {
+      tooltip
+        .style("opacity", 1)
+        .style("left", event.pageX + "px")
+        .attr("data-year", d.Year)
+        .style("top", event.pageY - 50 + "px")
+        .html(
+          "<p>" +
+            d.Name +
+            ": " +
+            d.Nationality +
+            "</br>" +
+            tooltip.attr("data-year") +
+            "</p>"
+        );
+    })
+    .on("mouseout", function () {
+      tooltip.style("opacity", 0);
+    });
+  svg
+    .append("g")
+    .attr("id", "x-axis")
+    .attr("transform", "translate(0," + h + ")")
+    .call(xAxis);
+  svg.append("g").attr("id", "y-axis").call(yAxis);
+});

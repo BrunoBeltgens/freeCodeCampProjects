@@ -1,0 +1,106 @@
+class Calculator extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      display: "0"
+    };
+    this.input = this.input.bind(this);
+    this.clear = this.clear.bind(this);
+    this.equals = this.equals.bind(this);
+    this.dot = this.dot.bind(this);
+  }
+  input(e) {
+    let str = e.target.textContent;
+    if (this.state.display === "0") {
+      this.setState((state) => ({
+        display: str
+      }));
+    } else {
+      this.setState((state) => ({
+        display: state.display + str
+      }));
+    }
+  }
+  dot() {
+    let regex = /((^\d+|(\-|\/|\+|\*))\d+$)|^\d$/;
+    if (this.state.display === "0") {
+      this.setState((state) => ({
+        display: "0."
+      }));
+    } else if (regex.test(this.state.display) === true) {
+      this.setState((state) => ({
+        display: state.display + "."
+      }));
+    }
+  }
+  equals() {
+    this.setState((state) => ({
+      display: eval(state.display.replace(/\D+(?=(\*|\/|\+)-?)/g, ""))
+    }));
+  }
+  clear() {
+    this.setState({
+      display: "0"
+    });
+  }
+  render() {
+    return (
+      <div id="grid">
+        <div id="display">{this.state.display}</div>
+        <button onClick={this.clear} id="clear">
+          AC
+        </button>
+        <button onClick={this.input} id="divide">
+          /
+        </button>
+        <button onClick={this.input} id="multiply">
+          *
+        </button>
+        <button onClick={this.input} id="seven">
+          7
+        </button>
+        <button onClick={this.input} id="eight">
+          8
+        </button>
+        <button onClick={this.input} id="nine">
+          9
+        </button>
+        <button onClick={this.input} id="subtract">
+          -
+        </button>
+        <button onClick={this.input} id="four">
+          4
+        </button>
+        <button onClick={this.input} id="five">
+          5
+        </button>
+        <button onClick={this.input} id="six">
+          6
+        </button>
+        <button onClick={this.input} id="add">
+          +
+        </button>
+        <button onClick={this.input} id="one">
+          1
+        </button>
+        <button onClick={this.input} id="two">
+          2
+        </button>
+        <button onClick={this.input} id="three">
+          3
+        </button>
+        <button onClick={this.equals} id="equals">
+          &#61;
+        </button>
+        <button onClick={this.input} id="zero">
+          0
+        </button>
+        <button onClick={this.dot} id="decimal">
+          .
+        </button>
+      </div>
+    );
+  }
+}
+
+ReactDOM.render(<Calculator />, document.getElementById("app"));

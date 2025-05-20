@@ -1,0 +1,84 @@
+const h = 400,
+  w = 800,
+  barW = w / 250;
+const svg = d3
+  .select("#chart")
+  .append("svg")
+  .attr("width", w + 80)
+  .attr("height", h + 25);
+let tooltip = d3
+  .select("#chart")
+  .append("div")
+  .attr("id", "tooltip")
+  .style("opacity", 0);
+d3.json(
+  "https://raw.githubusercontent.com/FreeCodeCamp/ProjectReferenceData/master/GDP-data.json"
+).then((data) => {
+  const GDP = data.data.map((d) => {
+    return d[1];
+  });
+  const Dates = data.data.map((d) => {
+    return new Date(d[0]);
+  });
+  const xScale = d3
+    .scaleTime()
+    .domain([d3.min(Dates), d3.max(Dates)])
+    .range([0, w]);
+  const yScale = d3
+    .scaleLinear()
+    .domain([0, d3.max(GDP)])
+    .range([0, h]);
+  let scaledGDP = [];
+  scaledGDP = GDP.map((d) => {
+    return yScale(d);
+  });
+  svg
+    .selectAll("rect")
+    .data(scaledGDP)
+    .enter()
+    .append("rect")
+    .attr("x", (d, i) => xScale(Dates[i]))
+    .attr("y", (d) => h - d)
+    .attr("height", (d) => d)
+    .attr("width", barW)
+    .style("fill", "lightblue")
+    .attr("class", "bar")
+    .attr("transform", "translate(60, 0)")
+    .attr("data-date", (d, i) => data.data[i][0])
+    .attr("data-gdp", (d, i) => data.data[i][1])
+    .attr("index", (d, i) => i)
+    .on("mouseover", function () {
+      tooltip
+        .style("opacity", 1)
+        .attr("data-date", d3.select(this).attr("data-date"))
+        .attr("data-gdp", d3.select(this).attr("data-gdp"))
+        .style("left", event.pageX + "px")
+        .style("transform", "translate(20px,-120px)")
+        .html(
+          "<p>" +
+            tooltip.attr("data-date") +
+            "</br>$" +
+            tooltip.attr("data-gdp") +
+            " Billion</p>"
+        );
+    })
+    .on("mouseout", () => {
+      tooltip.style("opacity", 0);
+    });
+  const yAxisScale = d3
+    .scaleLinear()
+    .domain([0, d3.max(GDP)])
+    .range([h, 0]);
+  const yAxis = d3.axisLeft(yAxisScale);
+  const xAxis = d3.axisBottom().scale(xScale);
+  svg
+    .append("g")
+    .call(yAxis)
+    .attr("id", "y-axis")
+    .attr("transform", "translate(60, 0)");
+  svg
+    .append("g")
+    .call(xAxis)
+    .attr("id", "x-axis")
+    .attr("transform", "translate(60, 400)");
+});

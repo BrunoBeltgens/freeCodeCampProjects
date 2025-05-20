@@ -1,0 +1,11 @@
+* {
+  font-size: 1.8rem;
+}
+button {
+  height: 3rem;
+  width: 3rem;
+}
+#start_stop,
+#reset {
+  width: 10rem;
+}

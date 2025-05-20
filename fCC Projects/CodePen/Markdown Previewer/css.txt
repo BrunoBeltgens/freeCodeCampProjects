@@ -1,0 +1,17 @@
+body {
+  margin: 0;
+  padding: 0;
+}
+div {
+  width: 90%;
+  margin: 0 auto;
+}
+#editor {
+  width: 100% !important;
+  height: 40vh !important;
+  resize: vertical;
+  margin-bottom: 5vh;
+}
+img {
+  max-width: 100%;
+}

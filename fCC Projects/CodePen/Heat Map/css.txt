@@ -1,0 +1,25 @@
+body {
+  font-family: Arial, sans-serif;
+}
+h1,
+h2 {
+  padding: 1rem 0 0 2rem;
+}
+.cell:hover {
+  fill: gray !important;
+}
+#tooltip {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: absolute;
+  width: 200px;
+  height: 80px;
+  padding: 2px;
+  text-align: center;
+  font-size: 1rem;
+  font-weight: 200;
+  background: lightsteelblue;
+  border-radius: 0.5rem;
+  pointer-events: none;
+}
